@@ -66,7 +66,7 @@ trait Patterns extends Parser
     group(RelationshipPattern ~~ NodePattern) ~~>> (ast.RelationshipChain(_, _, _))
   }
 
-  private def RelationshipPattern: Rule1[org.opencypher.v9_0.expressions.RelationshipPattern] = rule {
+  private def RelationshipPattern: Rule1[org.opencypher.v9_0.expressions.RelationshipPattern] = rule (
     (
         LeftArrowHead ~~ Dash ~~ RelationshipDetail ~~ Dash ~~ RightArrowHead ~ push(SemanticDirection.BOTH)
       | LeftArrowHead ~~ Dash ~~ RelationshipDetail ~~ Dash ~ push(SemanticDirection.INCOMING)
@@ -74,7 +74,12 @@ trait Patterns extends Parser
       | Dash ~~ RelationshipDetail ~~ Dash ~ push(SemanticDirection.BOTH)
     ) ~~>> ((variable, base, relTypes, range, props, dir) => ast.RelationshipPattern(variable, relTypes.types, range,
       props, dir, relTypes.legacySeparator, base))
-  }
+    | (
+        Tilde ~~ RelationshipDetail ~~ Tilde ~~ Tilde ~ push(SemanticDirection.OUTGOING)
+      | Tilde ~~ Tilde ~~ RelationshipDetail ~~ Tilde ~ push(SemanticDirection.INCOMING)
+    ) ~~>> ((variable, base, relTypes, range, props, dir) => ast.VirtualRelationshipPattern(variable, relTypes.types, range,
+      props, dir, relTypes.legacySeparator, base))
+  )
 
   private def RelationshipDetail: Rule5[
       Option[ast.Variable],
@@ -113,8 +118,17 @@ trait Patterns extends Parser
   )
 
   private def NodePattern: Rule1[org.opencypher.v9_0.expressions.NodePattern] = rule("a node pattern") (
+    RealNodePattern | VirtualNodePattern
+  )
+
+  private def RealNodePattern: Rule1[org.opencypher.v9_0.expressions.NodePattern] = rule("a real node pattern") (
     group("(" ~~ MaybeVariableWithBase ~ MaybeNodeLabels ~ MaybeProperties ~~ ")") ~~>> { (v, base, labels, props) => ast.NodePattern(v, labels, props, base)}
-    | group(Variable ~ MaybeNodeLabels ~ MaybeProperties)  ~~>> (ast.InvalidNodePattern(_, _, _)) // Here to give nice error messages
+      | group(Variable ~ MaybeNodeLabels ~ MaybeProperties)  ~~>> (ast.InvalidNodePattern(_, _, _)) // Here to give nice error messages
+  )
+
+  private def VirtualNodePattern: Rule1[org.opencypher.v9_0.expressions.NodePattern] = rule("a virtual node pattern") (
+    group("<" ~~ MaybeVariableWithBase ~ MaybeNodeLabels ~ MaybeProperties ~~ ">") ~~>> { (v, base, labels, props) => ast.VirtualNodePattern(v, labels, props, base)}
+      | group(Variable ~ MaybeNodeLabels ~ MaybeProperties)  ~~>> (ast.InvalidNodePattern(_, _, _)) // Here to give nice error messages
   )
 
   private def MaybeVariableWithBase: Rule2[Option[ast.Variable], Option[ast.Variable]] = rule("a variable") {

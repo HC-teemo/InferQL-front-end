@@ -26,7 +26,9 @@ package object symbols {
   val CTInteger: IntegerType = IntegerType.instance
   val CTMap: MapType = MapType.instance
   val CTNode: NodeType = NodeType.instance
+  val CTVNode: VirtualNodeType = VirtualNodeType.instance
   val CTRelationship: RelationshipType = RelationshipType.instance
+  val CTVRelationship: VirtualRelationshipType = VirtualRelationshipType.instance
   val CTPoint: PointType = PointType.instance
   val CTDateTime: DateTimeType = TemporalTypes.datetime
   val CTLocalDateTime: LocalDateTimeType = TemporalTypes.localdatetime

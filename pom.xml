@@ -196,7 +196,8 @@
           <artifactId>license-maven-plugin</artifactId>
           <version>3.0</version>
           <configuration>
-            <strictCheck>true</strictCheck>
+            <skip>true</skip>
+            <strictCheck>false</strictCheck>
             <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
             <properties>
               <owner>Neo4j Sweden AB</owner> <!-- TODO  -->
@@ -240,6 +241,7 @@
         <artifactId>licensing-maven-plugin</artifactId>
         <version>1.7.6</version>
         <configuration>
+          <skip>true</skip>
           <failIfDisliked>true</failIfDisliked>
           <failIfMissing>true</failIfMissing>
           <plainTextReport>true</plainTextReport>

@@ -54,6 +54,16 @@ trait Base extends Parser {
     // U+FF0D － full-width hyphen-minus
     anyOf(Array('\u002d', '\u00ad', '\u2010', '\u2011', '\u2012', '\u2013', '\u2014', '\u2015', '\u2212', '\ufe58', '\ufe63', '\uff0d'))
   }
+  def Tilde = rule("'~'") {
+    // U+007E ~ 标准波浪线/tilde
+    // U+02DC ˜ 小型波浪线/small tilde
+    // U+2053 ⁓ 摆动波浪线/swung dash
+    // U+223C ∼ 波浪运算符/tilde operator (数学符号)
+    // U+301C 〜 波浪破折号/wave dash (日文波浪线)
+    // U+3030 〰 波浪破折号/wavy dash (CJK符号)
+    // U+FF5E ～ 全角波浪线/fullwidth tilde
+    anyOf(Array('\u007E', '\u02DC', '\u2053', '\u223C', '\u301C', '\u3030', '\uFF5E'))
+  }
   def LeftArrowHead = rule("'<'") {
     // U+003c < less-than sign
     // U+27e8 ⟨ mathematical left angle bracket

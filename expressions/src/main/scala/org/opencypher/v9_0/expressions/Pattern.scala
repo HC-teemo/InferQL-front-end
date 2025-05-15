@@ -173,3 +173,47 @@ case class RelationshipPattern(
 
   def isDirected: Boolean = direction != SemanticDirection.BOTH
 }
+
+
+trait VirtualPattern
+
+class VirtualNodePattern(variable: Option[Variable],
+                         labels: Seq[LabelName],
+                         properties: Option[Expression],
+                         baseNode: Option[LogicalVariable] = None)(position: InputPosition)
+  extends NodePattern(variable, labels, properties, baseNode)(position) with VirtualPattern {
+
+  override def toString: String = s"VirtualNodePattern($variable,$labels,$properties,$baseNode)"
+}
+
+object VirtualNodePattern {
+  def apply(variable: Option[Variable],
+            labels: Seq[LabelName],
+            properties: Option[Expression],
+            baseNode: Option[LogicalVariable] = None)(position: InputPosition) : VirtualNodePattern =
+    new VirtualNodePattern(variable, labels, properties, baseNode)(position)
+}
+
+class VirtualRelationshipPattern(variable: Option[Variable],
+                                  types: Seq[RelTypeName],
+                                  length: Option[Option[Range]],
+                                  properties: Option[Expression],
+                                  direction: SemanticDirection,
+                                  legacyTypeSeparator: Boolean = false,
+                                  baseRel: Option[LogicalVariable] = None)(position: InputPosition)
+  extends RelationshipPattern(variable, types, length, properties, direction, legacyTypeSeparator, baseRel)(position) with VirtualPattern {
+  override def toString: String = s"VirtualRelationshipPattern($variable,$types,$length,$properties,$direction,$legacyTypeSeparator,$baseRel)"
+}
+
+object VirtualRelationshipPattern {
+  def apply(variable: Option[Variable],
+            types: Seq[RelTypeName],
+            length: Option[Option[Range]],
+            properties: Option[Expression],
+            direction: SemanticDirection,
+            legacyTypeSeparator: Boolean = false,
+            baseRel: Option[LogicalVariable] = None)(position: InputPosition) : VirtualRelationshipPattern =
+    new VirtualRelationshipPattern(variable, types, length, properties, direction, legacyTypeSeparator, baseRel)(position)
+}
+
+
