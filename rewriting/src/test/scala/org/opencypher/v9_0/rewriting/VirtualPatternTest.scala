@@ -9,7 +9,7 @@ class VirtualPatternTest extends CypherFunSuite{
   import org.opencypher.v9_0.parser.ParserFixture._
 
   test("Standard"){
-    val r = parser.parse("MATCH <n:a{id:1}>~[r:Foo]~~<> RETURN n")
+    val r = parser.parse("MATCH (n)~[:contains]~~<m> RETURN n,m")
     println(r)
   }
 }

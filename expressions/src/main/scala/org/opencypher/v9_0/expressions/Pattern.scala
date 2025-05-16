@@ -177,24 +177,29 @@ case class RelationshipPattern(
 
 trait VirtualPattern
 
-class VirtualNodePattern(variable: Option[Variable],
+class VirtualNodePattern(variable: Option[LogicalVariable],
                          labels: Seq[LabelName],
                          properties: Option[Expression],
                          baseNode: Option[LogicalVariable] = None)(position: InputPosition)
   extends NodePattern(variable, labels, properties, baseNode)(position) with VirtualPattern {
-
   override def toString: String = s"VirtualNodePattern($variable,$labels,$properties,$baseNode)"
+//
+  override def copy(variable: Option[LogicalVariable] = variable,
+                    labels: Seq[LabelName] = labels,
+                    properties: Option[Expression] = properties,
+                    baseNode: Option[LogicalVariable] = baseNode)(position: InputPosition): VirtualNodePattern =
+    VirtualNodePattern(variable, labels, properties, baseNode)(position)
 }
 
 object VirtualNodePattern {
-  def apply(variable: Option[Variable],
+  def apply(variable: Option[LogicalVariable],
             labels: Seq[LabelName],
             properties: Option[Expression],
             baseNode: Option[LogicalVariable] = None)(position: InputPosition) : VirtualNodePattern =
     new VirtualNodePattern(variable, labels, properties, baseNode)(position)
 }
 
-class VirtualRelationshipPattern(variable: Option[Variable],
+class VirtualRelationshipPattern(variable: Option[LogicalVariable],
                                   types: Seq[RelTypeName],
                                   length: Option[Option[Range]],
                                   properties: Option[Expression],
@@ -202,11 +207,21 @@ class VirtualRelationshipPattern(variable: Option[Variable],
                                   legacyTypeSeparator: Boolean = false,
                                   baseRel: Option[LogicalVariable] = None)(position: InputPosition)
   extends RelationshipPattern(variable, types, length, properties, direction, legacyTypeSeparator, baseRel)(position) with VirtualPattern {
+
   override def toString: String = s"VirtualRelationshipPattern($variable,$types,$length,$properties,$direction,$legacyTypeSeparator,$baseRel)"
+
+  override def copy(variable: Option[LogicalVariable] = variable,
+           types: Seq[RelTypeName] = types,
+           length: Option[Option[Range]] = length,
+           properties: Option[Expression] = properties,
+           direction: SemanticDirection = direction,
+           legacyTypeSeparator: Boolean = legacyTypeSeparator,
+           baseRel: Option[LogicalVariable] = baseRel)(position: InputPosition): VirtualRelationshipPattern =
+    VirtualRelationshipPattern(variable, types, length, properties, direction, legacyTypeSeparator, baseRel)(position)
 }
 
 object VirtualRelationshipPattern {
-  def apply(variable: Option[Variable],
+  def apply(variable: Option[LogicalVariable],
             types: Seq[RelTypeName],
             length: Option[Option[Range]],
             properties: Option[Expression],
